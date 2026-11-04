@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<library path="jetson_ackermann_controller">
+  <class
+    name="jetson_ackermann_controller/JetsonAckermannController"
+    type="jetson_ackermann_controller::JetsonAckermannController"
+    base_class_type="nav2_core::Controller">
+    <description>Ackermann controller with path tracking + sampled local obstacle avoidance.</description>
+  </class>
+</library>
+

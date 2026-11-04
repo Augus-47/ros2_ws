@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="car_cmd_interface" exec="car_cmd_interface_node" name="car_cmd_interface_node" output="screen">
+  </node>
+</launch>

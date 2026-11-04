@@ -1,0 +1,55 @@
+ekf_filter_node_odom:
+  ros__parameters:
+    frequency: 50.0         # 推荐 30~50Hz
+    sensor_timeout: 0.1
+    two_d_mode: true       # 车开在地面也可以 true，但你有 LiDAR 3D 以后建议 false
+    transform_time_offset: 0.0
+    transform_timeout: 0.0
+    publish_tf: true
+    publish_acceleration: false
+
+    map_frame: map          # 以后给 rtabmap 用的
+    odom_frame: odom        # 融合的里程计坐标
+    odom_topic: /odom
+    base_link_frame: base_link
+    world_frame: odom       # 这里先用 odom
+
+    # ============== 1) IMU 话题 ==============
+    imu0: /imu_msg          # 如果你实际用的是 /Imu_Pub，就改成那个
+    imu0_config: [
+      false, false, false,   # 位置不用
+      false, false, false,    # 姿态：使用 IMU 的 Yaw 轴
+      false, false, false,   # 线速度不用（IMU也没有）
+      false, false, false,    # 只使用角速度 wx wy wz
+      false, false, false    # 线加速度也不用
+    ]
+
+    imu0_differential: false
+    imu0_relative: true
+    imu0_remove_gravitational_acceleration: true
+
+    # ============== 2) 轮式里程计 ==============
+    # 假设你以后会发布 /wheel_odom (nav_msgs/Odometry)
+    odom0: /wheel_odom
+    odom0_config: [
+      true,  true,  false,   # x y 用轮里程计，z 不用
+      false, false, true,    # yaw 可以用一下（如果你算了），roll pitch 不用
+      true,  false, false,   # vx vy（或者只 vx），vz不用
+      false, false, true,   # 角速度一般 IMU 提供就够
+      false, false, false
+    ]
+    odom0_differential: false
+    odom0_relative: false
+
+    # ============== 3) 如果以后加 GPS 示意 ==============
+    # gps0: /Gnss_Pub_odom
+    # gps0_config: [
+    #   true, true, false,
+    #   false, false, false,
+    #   false, false, false,
+    #   false, false, false,
+    #   false, false, false
+    # ]
+    # gps0_differential: false
+    # gps0_relative: false
+

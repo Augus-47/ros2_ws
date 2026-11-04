@@ -1,0 +1,31 @@
+/partol_node:
+  ros__parameters:
+    use_sim_time: false
+
+    # 是否使用固定初始位姿
+    use_fixed_initial_pose: false
+    wait_for_localization_stable: true
+
+    # 初始位姿仍然按 base_link（后轴中心）定义
+    initial_points: [0.0, 0.0, 0.0]
+
+    # 这里现在表示“车头参考点”的目标位姿
+    target_points: [
+      1.825, 0.067, -0.1107,
+      7.664, -2.474, -0.9917,
+      5.285, -11.99, -3.0667,
+      -3.635, -8.367, 1.5283
+    ]
+
+    img_save_path: /tmp/partol_imgs/
+    loop_patrol: true
+
+    # 新逻辑核心参数
+    front_offset: 0.8
+    photo_trigger_radius: 0.30
+    photo_wait_sec: 0.5
+    settle_before_photo_sec: 0.8
+    cancel_wait_sec: 1.0
+
+    continue_on_waypoint_failure: true
+

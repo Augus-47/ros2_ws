@@ -1,0 +1,9 @@
+twist_to_vehiclecmd_node:
+  ros__parameters:
+    wheelbase: 0.8
+    max_speed: 1.5
+    max_steering: 0.6
+    cmd_vel_topic: /cmd_vel
+    vehicle_cmd_topic: /vehicle/cmd
+    zero_speed_eps: 0.01
+

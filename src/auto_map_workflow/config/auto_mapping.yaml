@@ -1,0 +1,19 @@
+map_workflow:
+  ros__parameters:
+  
+    file_directory: /home/nvidia/ros2_ws/maps/
+    file_name: map
+  
+    pcd_file: "/home/nvidia/ros2_ws/maps/map.pcd"
+    pgm_file: "/home/nvidia/ros2_ws/maps/map.pgm"
+    yaml_file: "/home/nvidia/ros2_ws/maps/map.yaml"
+    map_name: "/home/nvidia/ros2_ws/maps/map"
+
+    pcd2pgm_package: "pcd2pgm"
+    pcd2pgm_launch: "pcd2pgm.launch.py"
+
+    finish_mode: "manual"     # manual / time
+    mapping_duration: 60.0
+
+    map_topic: "/map"
+

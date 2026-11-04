@@ -1,0 +1,370 @@
+amcl:
+  ros__parameters:
+    use_sim_time: false
+    alpha1: 0.2
+    alpha2: 0.2
+    alpha3: 0.2
+    alpha4: 0.2
+    alpha5: 0.2
+    base_frame_id: "base_link"
+    beam_skip_distance: 0.5
+    beam_skip_error_threshold: 0.9
+    beam_skip_threshold: 0.3
+    do_beamskip: false
+    global_frame_id: "map"
+    lambda_short: 0.1
+    laser_likelihood_max_dist: 2.0
+    laser_max_range: 100.0
+    laser_min_range: 0.0
+    laser_model_type: "likelihood_field"
+    max_beams: 60
+    max_particles: 2000
+    min_particles: 500
+    odom_frame_id: "odom"
+    pf_err: 0.05
+    pf_z: 0.99
+    recovery_alpha_fast: 0.0
+    recovery_alpha_slow: 0.0
+    resample_interval: 1
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    save_pose_rate: 0.5
+    sigma_hit: 0.2
+    tf_broadcast: true
+    transform_tolerance: 0.3
+    update_min_a: 0.2
+    update_min_d: 0.25
+    z_hit: 0.5
+    z_max: 0.05
+    z_rand: 0.5
+    z_short: 0.05
+    scan_topic: /scan
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: false
+    global_frame: map
+    robot_base_frame: base_link
+    odom_topic: /odom
+    bt_loop_duration: 50
+    goal_reached_tol: 0.05
+    default_server_timeout: 5000
+    wait_for_service_timeout: 1000
+    default_nav_to_pose_bt_xml: "/home/nvidia/nav2_bt/nav_to_pose_no_spin_backup.xml"
+    default_nav_through_poses_bt_xml: "/home/nvidia/nav2_bt/nav_through_poses_no_spin_backup.xml"
+    plugin_lib_names:
+      - nav2_compute_path_to_pose_action_bt_node
+      - nav2_compute_path_through_poses_action_bt_node
+      - nav2_smooth_path_action_bt_node
+      - nav2_follow_path_action_bt_node
+      - nav2_wait_action_bt_node
+      - nav2_assisted_teleop_action_bt_node
+      - nav2_drive_on_heading_bt_node
+      - nav2_clear_costmap_service_bt_node
+      - nav2_is_stuck_condition_bt_node
+      - nav2_goal_reached_condition_bt_node
+      - nav2_goal_updated_condition_bt_node
+      - nav2_globally_updated_goal_condition_bt_node
+      - nav2_is_path_valid_condition_bt_node
+      - nav2_initial_pose_received_condition_bt_node
+      - nav2_reinitialize_global_localization_service_bt_node
+      - nav2_rate_controller_bt_node
+      - nav2_distance_controller_bt_node
+      - nav2_speed_controller_bt_node
+      - nav2_truncate_path_action_bt_node
+      - nav2_truncate_path_local_action_bt_node
+      - nav2_goal_updater_node_bt_node
+      - nav2_recovery_node_bt_node
+      - nav2_pipeline_sequence_bt_node
+      - nav2_round_robin_node_bt_node
+      - nav2_transform_available_condition_bt_node
+      - nav2_time_expired_condition_bt_node
+      - nav2_distance_traveled_condition_bt_node
+      - nav2_single_trigger_bt_node
+      - nav2_goal_updated_controller_bt_node
+      - nav2_is_battery_low_condition_bt_node
+      - nav2_navigate_through_poses_action_bt_node
+      - nav2_navigate_to_pose_action_bt_node
+      - nav2_remove_passed_goals_action_bt_node
+      - nav2_planner_selector_bt_node
+      - nav2_controller_selector_bt_node
+      - nav2_goal_checker_selector_bt_node
+      - nav2_controller_cancel_bt_node
+      - nav2_path_longer_on_approach_bt_node
+      - nav2_wait_cancel_bt_node
+      - nav2_assisted_teleop_cancel_bt_node
+      - nav2_drive_on_heading_cancel_bt_node
+      - nav2_is_battery_charging_condition_bt_node
+
+bt_navigator_navigate_through_poses_rclcpp_node:
+  ros__parameters:
+    use_sim_time: false
+
+bt_navigator_navigate_to_pose_rclcpp_node:
+  ros__parameters:
+    use_sim_time: false
+
+controller_server:
+  ros__parameters:
+    goal_checker_plugins: ["goal_checker"]
+    
+    goal_checker:
+      stateful: True
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.2    # 0.30 改成 0.15
+      yaw_goal_tolerance: 0.4    # 0.8改成0.3
+
+    FollowPath:
+      plugin: "jetson_ackermann_controller/JetsonAckermannController"
+      
+      use_bev_as_primary: true  # 是否测试回退机制
+      bev_fallback_to_costmap: true
+      bev_topic: /bev/cost_grid
+      bev_timeout: 0.20
+      bev_unknown_cost: 80.0
+
+      enable_path_resample: true
+      path_resample_ds: 0.10
+      
+      num_kappa_samples: 25
+      kappa_sample_span_ratio: 0.28   # 0.28 -> 0.18
+      
+      
+
+      max_steer_rate_deg_per_s: 40.0   #  45.0
+
+      w_lat_error: 0.9  # 0.8 改成 1.2   0.6
+      w_yaw_error: 0.6  # 0.3 改成 0.5
+
+      enable_adaptive_sampling_span: true
+      sampling_span_min_ratio: 0.12  #0.35 改 0.18   0.22
+      sampling_span_max_ratio: 0.35 # 1.0 改 0.55   0.45
+      sampling_span_obstacle_gain: 0.35  # 0.8 改 1.2   0.50
+
+      enable_obstacle_speed_scaling: true
+      obstacle_speed_cost_gain: 1.4   # 1.2 改成 2.0
+      obstacle_speed_min_scale: 0.35  # 0.10 改  0.35
+
+      wheelbase: 0.8
+      max_steer_deg: 45.0
+
+      desired_speed: 0.16   # 0.35 改成 0.22
+      min_speed: 0.06
+      max_speed: 0.22  # 0.40 改成  0.28
+      max_accel: 0.6  # 1.0 改 0.6
+      max_decel: 0.8  # 1.0 改 0.5
+
+      lookahead_dist: 1.0  # 0.8改成 0.55  略缩短前瞻，减少抄近路切内角
+      min_lookahead: 0.85    # 0.6改成0.45    0.75
+      max_lookahead: 0.85     # 1.4改成0.90     1.25
+      lookahead_time: 1.4
+      use_velocity_scaled_lookahead: false
+
+      min_approach_linear_velocity: 0.06
+      approach_velocity_scaling_dist: 1.2
+      stop_distance: 0.05
+
+      horizon_time: 1.6
+      sim_dt: 0.05
+
+      w_cost: 20.0   # 7.0改成12.0   10.0 明确提高“ 帕高代价区“的程度
+      w_kappa: 0.20   # 0.15 改成0.20
+      w_steer_change: 1.0  # 0.25 改成 1.0    0.8
+      w_reverse: 3.0
+      w_progress: 0.0  #  0.3 ->  0.0  控制模块写的评分会鼓励“ 尽快靠 carrot”，对于窄场景阿克曼车特别容易诱发贴边
+      
+      max_lat_accel: 0.65
+      forbidden_cost_threshold: 140.0   # 170 -> 155.0  让那些“已经很靠边、虽然没撞但明显不舒服”的候选轨迹更早被判掉
+
+      allow_reversing: false
+      reverse_speed: 0.08
+      reverse_hold_time: 0.8
+      direction_switch_x: 0.25
+      no_valid_cmd_before_reverse: 8
+      
+      transform_tolerance: 0.3
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: false
+      global_frame: odom
+      robot_base_frame: base_link
+      rolling_window: true
+      transform_tolerance: 0.3
+
+      #footprint: "[[-0.33, -0.43], [0.00, -0.43], [1.08, -0.50], [1.08, 0.50], [0.00, 0.43], [-0.33, 0.43]]"
+      
+      footprint: "[[-0.33, -0.43], [0.00, -0.43], [1.08, -0.52], [1.08, 0.52], [0.00, 0.43], [-0.33, 0.43]]"
+
+      footprint_padding: 0.01   # 0.05 改成 0.08
+
+      update_frequency: 10.0
+      publish_frequency: 5.0
+      width: 10
+      height: 10
+      resolution: 0.05
+      observation_persistence: 0.0
+
+      plugins: ["obstacle_layer", "inflation_layer"]
+
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: scan
+        scan:
+          topic: /scan
+          data_type: "LaserScan"
+          marking: True
+          clearing: True
+          raytrace_max_range: 2.2
+          obstacle_max_range: 1.8
+          raytrace_min_range: 0.15
+          obstacle_min_range: 0.15
+          max_obstacle_height: 2.0
+
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 3.0  # 5.0 ->  4.5
+        inflation_radius: 0.6     # 0.3 ->  0.35
+
+      always_send_full_costmap: True
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      use_sim_time: false
+      global_frame: map
+      robot_base_frame: base_link
+
+      footprint: "[[-0.33, -0.43], [0.00, -0.43], [1.08, -0.52], [1.08, 0.52], [0.00, 0.43], [-0.33, 0.43]]"
+      footprint_padding: 0.01   #  0.05 改成0.08
+
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      resolution: 0.05
+      track_unknown_space: true
+      transform_tolerance: 0.3
+
+      plugins: ["static_layer", "inflation_layer"]
+
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: True
+
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 2.5  # 3.5 改成 3.0
+        inflation_radius: 1.0   # 0.60 改成 0.85
+
+      always_send_full_costmap: True
+
+map_server:
+  ros__parameters:
+    use_sim_time: false
+    yaml_filename: ""
+    free_thresh: 0.25
+    occupied_thresh: 0.65
+
+map_saver:
+  ros__parameters:
+    use_sim_time: false
+    save_map_timeout: 5.0
+    free_thresh_default: 0.25
+    occupied_thresh_default: 0.65
+    map_subscribe_transient_local: True
+
+planner_server:
+  ros__parameters:
+    expected_planner_frequency: 10.0
+    use_sim_time: false
+    planner_plugins: ["GridBased"]
+
+    GridBased:
+      plugin: "nav2_smac_planner/SmacPlannerHybrid"
+      motion_model_for_search: "DUBIN"
+      minimum_turning_radius: 0.8
+      allow_unknown: true
+
+      reverse_penalty: 2.0
+      change_penalty: 0.0 # 0.5改成0.0
+      non_straight_penalty: 1.05
+      cost_penalty: 3.3
+
+      analytic_expansion_ratio: 3.5
+      analytic_expansion_max_cost: 140.0
+      max_iterations: 1000000
+      angle_quantization_bins: 72
+      lookup_table_size: 20.0
+      max_planning_time: 6.0
+      smooth_path: true
+
+smoother_server:
+  ros__parameters:
+    use_sim_time: false
+    smoother_plugins: ["simple_smoother"]
+    simple_smoother:
+      plugin: "nav2_smoother::SimpleSmoother"
+      tolerance: 1.0e-10
+      max_its: 1000
+      do_refinement: True
+
+behavior_server:
+  ros__parameters:
+    use_sim_time: false
+    costmap_topic: /local_costmap/local_costmap/costmap_raw
+    footprint_topic: /local_costmap/local_costmap/published_footprint
+    cycle_frequency: 10.0
+    behavior_plugins: ["drive_on_heading", "assisted_teleop", "wait"]
+
+    drive_on_heading:
+      plugin: "nav2_behaviors/DriveOnHeading"
+
+    wait:
+      plugin: "nav2_behaviors/Wait"
+
+    assisted_teleop:
+      plugin: "nav2_behaviors/AssistedTeleop"
+
+    global_frame: odom
+    robot_base_frame: base_link
+    transform_tolerance: 0.3
+    simulate_ahead_time: 2.0
+    max_rotational_vel: 0.35
+    min_rotational_vel: 0.1
+    rotational_acc_lim: 1.5
+
+robot_state_publisher:
+  ros__parameters:
+    use_sim_time: false
+
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: false
+    loop_rate: 20
+    stop_on_failure: false
+    waypoint_task_executor_plugin: "photo_at_waypoint"
+    photo_at_waypoint:
+      plugin: "nav2_waypoint_follower::PhotoAtWaypoint"
+      enabled: true
+      camera_image_topic_name: "/image_raw"
+      save_images_dir: "/home/nvidia/waypoint_images"
+      image_format: "png"
+
+velocity_smoother:
+  ros__parameters:
+    use_sim_time: false
+    smoothing_frequency: 20.0
+    scale_velocities: False
+    feedback: "OPEN_LOOP"
+
+    max_velocity: [0.40, 0.0, 0.45]
+    min_velocity: [-0.15, 0.0, -0.45]
+
+    max_accel: [0.8, 0.0, 1.0]
+    max_decel: [-1.0, 0.0, -1.2]
+
+    odom_topic: "odom"
+    odom_duration: 0.1
+    deadband_velocity: [0.0, 0.0, 0.0]
+    velocity_timeout: 1.0
+

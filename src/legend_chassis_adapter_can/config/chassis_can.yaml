@@ -1,0 +1,9 @@
+chassis_adapter_can_node:
+  ros__parameters:
+    can_if: can0
+    tx_rate: 50.0
+    rx_rate: 200.0
+    cmd_timeout: 0.3
+    steering_offset_deg: 0.0
+    publish_zero_on_timeout: true
+
