@@ -1,0 +1,51 @@
+scan_matcher:
+  ros__parameters:
+    global_frame_id: "map"
+    robot_frame_id: "base_link"
+    input_cloud_topic: "/rslidar_points"  # 核心补充：改为你的激光雷达点云话题
+    registration_method: "NDT"
+    ndt_resolution: 2.0
+    ndt_num_threads: 2
+    gicp_corr_dist_threshold: 5.0
+    trans_for_mapupdate: 1.5   # 运动1.5米，地图更新平移阈值
+    vg_size_for_input: 0.3   #0.5--0.3
+    vg_size_for_map: 0.2     #0.1--0.2
+    #距离滤波：
+    use_min_max_filter: true
+    scan_min_range: 0.6
+    scan_max_range: 100.0  #最大距离阈值
+    
+    scan_period: 0.2
+    map_publish_period: 15.0
+    num_targeted_cloud: 20
+    set_initial_pose: true
+    initial_pose_x: 0.0
+    initial_pose_y: 0.0
+    initial_pose_z: 0.0
+    initial_pose_qx: 0.0
+    initial_pose_qy: 0.0
+    initial_pose_qz: 0.0
+    initial_pose_qw: 1.0
+    use_imu: false  #目前未使用imu,因为缺少对imu和雷达之间的外参标定，以及imu的tf转化
+    use_odom: false
+    debug_flag: false
+
+graph_based_slam:
+    ros__parameters:
+      global_frame_id: "map"          # 补充：与 scan_matcher 保持一致的全局坐标系
+      robot_frame_id: "base_link"     # 补充：机器人本体坐标系
+      registration_method: "NDT"
+      ndt_resolution: 1.0
+      ndt_num_threads: 4
+      voxel_leaf_size: 0.2
+      loop_detection_period: 3000
+      threshold_loop_closure_score: 0.7
+      distance_loop_closure: 3.0    #100-3
+      range_of_searching_loop_closure: 8.0  #20--8
+      search_submap_num: 2
+      num_adjacent_pose_cnstraints: 5
+      use_save_map_in_loop: true
+      debug_flag: true
+      
+ 
+
